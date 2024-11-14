@@ -9,7 +9,7 @@ $sql = "SELECT post_id, title FROM posts";
 $result = $conn->query($sql);
 
 // Hiển thị danh sách các bài viết dưới dạng liên kết
-echo "<div class='post-list'><h2>Danh sách bài viết</h2><ul>";
+echo "<div class='post-list'><h1>DANH SÁCH BÀI VIẾT</h1><ul>";
 while ($row = $result->fetch_assoc()) {
     echo "<li><a href='index.php?post_id=" . $row['post_id'] . "'>" . $row['title'] . "</a></li>";
 }
@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['comment_text'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo htmlspecialchars($post['title']); ?></title>
+    <title>Hệ thống bình luận</title>
     <link rel="stylesheet" href="style.css"/>
     <style>
         /* Styling cho UI */
@@ -70,14 +70,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['comment_text'])) {
 
         <!-- Phần bình luận -->
         <div class="comment-section">
-            <h2>Comments</h2>
+            <h2>Bình luận</h2>
 
             <!-- Form thêm bình luận -->
             <form action="" method="POST">
-                <input type="text" name="commenter_name" placeholder="Your name" required><br>
-                <textarea name="comment_text" placeholder="Write your comment here..." required></textarea><br>
+                <input type="text" name="commenter_name" placeholder="Tên user:" required><br>
+                <textarea name="comment_text" placeholder="Viết bình luận ở đây..." required></textarea><br>
                 <input type="hidden" name="parent_comment_id" value="">
-                <button type="submit">Add Comment</button>
+                <button type="submit">Thêm bình luận</button>
             </form>
 
             <!-- Hiển thị các bình luận -->
@@ -92,9 +92,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['comment_text'])) {
                         // Form trả lời bình luận (nested comments)
                         echo '<form action="" method="POST" style="margin-top: 10px;">';
                         echo '<input type="hidden" name="parent_comment_id" value="' . $comment['comment_id'] . '">';
-                        echo '<input type="text" name="commenter_name" placeholder="Your name" required><br>';
-                        echo '<textarea name="comment_text" placeholder="Write your reply here..." required></textarea><br>';
-                        echo '<button type="submit">Reply</button>';
+                        echo '<input type="text" name="commenter_name" placeholder="Tên user" required><br>';
+                        echo '<textarea name="comment_text" placeholder="Viết phản hồi ở đây..." required></textarea><br>';
+                        echo '<button type="submit">Phản hồi</button>';
                         echo '</form>';
 
                         // Đệ quy để hiển thị bình luận con

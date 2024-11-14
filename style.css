@@ -8,7 +8,9 @@
 
 /* General layout */
 body {
-    background-color: #f4f4f9;
+    font-family: Arial, sans-serif;
+    background: url('background.jpg') no-repeat center center fixed;
+background-size: cover;
     color: #333;
     line-height: 1.6;
 }
@@ -57,6 +59,12 @@ h2 {
 .post-list {
     text-align: center;
     margin-bottom: 30px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    padding-bottom: 20px;
+    margin-left: 30%;
+    margin-right: 30%;
 }
 
 .post-list ul {
@@ -82,14 +90,19 @@ h2 {
 
 /* Comment section */
 .comment-section {
-    margin-top: 30px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 }
 
 .comment-section h2 {
     font-size: 20px;
     margin-bottom: 15px;
+    background-color:#6ab57a;
     color: #333;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 }
+
 
 /* Comment Form */
 .comment-form input[type="text"],
