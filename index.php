@@ -80,6 +80,7 @@ include("comController.php");
 
             <!-- Hiển thị các bình luận -->
             <?php
+            // Lấy dữ liệu bình luận từ cơ sở dữ liệu
             displayComments($comments);
             ?>
         </div>

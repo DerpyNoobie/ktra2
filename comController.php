@@ -144,6 +144,7 @@ function displayComments($comments, $parent_id = null) {
             echo '<input type="hidden" name="parent_comment_id" value="' . $comment['comment_id'] . '">';
             echo '<input type="text" name="commenter_name" placeholder="Username" required><br>';
             echo '<textarea name="comment_text" placeholder="Viết phản hồi ở đây..." required></textarea><br>';
+            echo '<div class="g-recaptcha" data-sitekey="6LfX5H4qAAAAAKDVoVci3BoeQ8DVpfIuTYqHPrN5"></div>';
             echo '<button type="submit" name="add_comment" class="reply-button">Phản hồi</button>';
             echo '</form>';
     
