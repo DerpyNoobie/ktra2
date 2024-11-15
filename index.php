@@ -37,45 +37,53 @@ include("comController.php");
         <button type="submit" name="add_comment" class="reply-button">Thêm bình luận</button>
         </form>
 
-    <?php
-        // Kiểm tra khi form được submit
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        // Kiểm tra reCAPTCHA
-        $secretKey = "6LfX5H4qAAAAAAWMRwzR2l6oZ69sG09opuEcXCBa";  
-        $responseKey = $_POST['g-recaptcha-response'];
-        $userIP = $_SERVER['REMOTE_ADDR'];
-
-        // Gửi yêu cầu xác thực reCAPTCHA đến Google
-        $url = "https://www.google.com/recaptcha/api/siteverify?secret=$secretKey&response=$responseKey&remoteip=$userIP";
-        $response = file_get_contents($url);
-        $responseKeys = json_decode($response, true);
-
-        // Kiểm tra kết quả xác thực reCAPTCHA
-        if (intval($responseKeys["success"]) !== 1) {
-            // Nếu xác thực không thành công, thông báo lỗi và không cho gửi bình luận
-            echo "<p style='color:red;'>Vui lòng xác thực reCAPTCHA trước khi gửi bình luận.</p>";
-        } else {
-            // Nếu xác thực thành công, tiếp tục xử lý bình luận
-            $commenter_name = $_POST['commenter_name']; // Tên người bình luận
-            $comment_text = $_POST['comment_text']; // Nội dung bình luận
-
-            // Xử lý bình luận 
-            echo "<p>Bình luận của bạn đã được gửi thành công!</p>";
-        }
-    }
+        <?php
+            if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_comment'])) {
+                // Kiểm tra reCAPTCHA
+                $secretKey = "6LfX5H4qAAAAAAWMRwzR2l6oZ69sG09opuEcXCBa";  
+                $responseKey = $_POST['g-recaptcha-response'];
+                $userIP = $_SERVER['REMOTE_ADDR'];
+            
+                // Gửi yêu cầu xác thực reCAPTCHA đến Google
+                $url = "https://www.google.com/recaptcha/api/siteverify?secret=$secretKey&response=$responseKey&remoteip=$userIP";
+                $response = file_get_contents($url);
+                $responseKeys = json_decode($response, true);
+            
+                // Kiểm tra kết quả xác thực reCAPTCHA
+                if (intval($responseKeys["success"]) !== 1) {
+                    // Nếu xác thực không thành công, thông báo lỗi và không cho gửi bình luận
+                    echo "<p style='color:red;'>Vui lòng xác thực reCAPTCHA trước khi gửi bình luận.</p>";
+                } else {
+                    // Nếu xác thực thành công, tiếp tục xử lý bình luận
+                    $commenter_name = $_POST['commenter_name'];
+                    $comment_text = $_POST['comment_text'];
+                    $parent_comment_id = isset($_POST['parent_comment_id']) ? intval($_POST['parent_comment_id']) : null;
+            
+                    // Gọi hàm thêm bình luận từ comController.php
+                    addComment($post_id, $commenter_name, $comment_text, $parent_comment_id);
+                    
+                    // Thông báo thành công và tải lại trang
+                    header("Location: index.php?post_id=$post_id");
+                    exit();
+                }
+            }
     ?>
 
         <!-- JavaScript kiểm tra reCAPTCHA trước khi gửi -->
         <script>
-            document.getElementById("commentForm").addEventListener("submit", function(event) {
-                var recaptchaResponse = grecaptcha.getResponse();
-                if (recaptchaResponse.length == 0) {
-                    // Nếu reCAPTCHA chưa được xác thực, ngừng gửi form và thông báo lỗi
-                    event.preventDefault(); 
-                    alert("Vui lòng xác thực reCAPTCHA trước khi gửi bình luận.");
-                }
+                // Kiểm tra reCAPTCHA trước khi gửi bất kỳ form bình luận nào
+                document.querySelectorAll(".comment-form").forEach(function(form) {
+                form.addEventListener("submit", function(event) {
+                    var recaptchaResponse = grecaptcha.getResponse();
+                    if (recaptchaResponse.length == 0) {
+                        // Nếu reCAPTCHA chưa được xác thực, ngừng gửi form và thông báo lỗi
+                        event.preventDefault();
+                        alert("Vui lòng xác thực reCAPTCHA trước khi gửi bình luận.");
+                    }
+                });
             });
         </script>
+
 
 
             <!-- Hiển thị các bình luận -->

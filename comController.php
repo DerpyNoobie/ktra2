@@ -129,31 +129,35 @@ function displayComments($comments, $parent_id = null) {
             echo '<div class="comment">';
             echo '<strong>' . htmlspecialchars($comment['commenter_name']) . '</strong> <em>' . htmlspecialchars($comment['created_at']) . '</em>';
             echo '<p>' . htmlspecialchars($comment['comment_text']) . '</p>';
-    
+
             // Nút chỉnh sửa dẫn đến trang edit_comment.php
             echo "<a href='edit_comment.php?comment_id=" . $comment['comment_id'] . "' class='edit-button'>Chỉnh sửa</a>";
-    
+
             // Nút xóa bình luận
             echo '<form action="" method="POST" style="display: inline-block;">';
             echo '<input type="hidden" name="comment_id" value="' . $comment['comment_id'] . '">';
             echo '<button type="submit" name="delete_comment" class="delete-button">Xóa</button>';
             echo '</form>';
-    
+
             // Form trả lời bình luận (nested comments)
             echo '<form action="" method="POST" style="margin-top: 10px;" class="comment-form">';
             echo '<input type="hidden" name="parent_comment_id" value="' . $comment['comment_id'] . '">';
             echo '<input type="text" name="commenter_name" placeholder="Username" required><br>';
             echo '<textarea name="comment_text" placeholder="Viết phản hồi ở đây..." required></textarea><br>';
+
+            // Thêm reCAPTCHA vào form trả lời bình luận con với unique ID
             echo '<div class="g-recaptcha" data-sitekey="6LfX5H4qAAAAAKDVoVci3BoeQ8DVpfIuTYqHPrN5"></div>';
             echo '<button type="submit" name="add_comment" class="reply-button">Phản hồi</button>';
             echo '</form>';
-    
+
             // Gọi lại hàm để hiển thị bình luận con
             displayComments($comments, $comment['comment_id']);
             echo '</div>';
         }
     }
 }
+
+
 
 // Thêm bình luận mới
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_comment'])) {
