@@ -119,45 +119,78 @@ if (!$post) {
     die("Bài viết không tồn tại.");
 }
 
+
+function timeElapsedString($datetime, $full = false) {
+    $now = new DateTime;
+    $ago = new DateTime($datetime);
+    $diff = $now->diff($ago);
+
+    // Chuyển đổi số ngày thành số tuần nếu cần
+    $weeks = floor($diff->d / 7);
+    $diff->d -= $weeks * 7;
+
+    $string = [
+        'y' => 'năm',
+        'm' => 'tháng',
+        'd' => 'ngày',
+        'h' => 'giờ',
+        'i' => 'phút',
+        's' => 'giây',
+    ];
+
+    // Cập nhật mảng $string để thêm số tuần (nếu có)
+    if ($weeks) {
+        $string['w'] = $weeks . ' tuần';
+    }
+
+    foreach ($string as $k => &$v) {
+        if ($diff->$k) {
+            $v = $diff->$k . ' ' . $v;
+        } else {
+            unset($string[$k]);
+        }
+    }
+
+    if (!$full) $string = array_slice($string, 0, 1);
+    return $string ? implode(', ', $string) . ' trước' : 'vừa xong';
+}
+
+
 // Lấy danh sách bình luận của bài viết
 $comments = getCommentsByPost($post_id);
-
 // Hiển thị bình luận của bài viết
-function displayComments($comments, $parent_id = null) {
-    foreach ($comments as $comment) {
+function displayComments($comments, $parent_id = null) { 
+       foreach ($comments as $comment) {
+         
         if ($comment['parent_comment_id'] == $parent_id) {
             echo '<div class="comment">';
-            echo '<strong>' . htmlspecialchars($comment['commenter_name']) . '</strong> <em>' . htmlspecialchars($comment['created_at']) . '</em>';
+            echo '<strong>' . htmlspecialchars($comment['commenter_name']) . '</strong> <em>' .  timeElapsedString($comment['created_at']) . '</em>';
             echo '<p>' . htmlspecialchars($comment['comment_text']) . '</p>';
 
             // Nút chỉnh sửa dẫn đến trang edit_comment.php
             echo "<a href='edit_comment.php?comment_id=" . $comment['comment_id'] . "' class='edit-button'>Chỉnh sửa</a>";
-
+    
             // Nút xóa bình luận
             echo '<form action="" method="POST" style="display: inline-block;">';
             echo '<input type="hidden" name="comment_id" value="' . $comment['comment_id'] . '">';
             echo '<button type="submit" name="delete_comment" class="delete-button">Xóa</button>';
             echo '</form>';
-
+    
             // Form trả lời bình luận (nested comments)
             echo '<form action="" method="POST" style="margin-top: 10px;" class="comment-form">';
             echo '<input type="hidden" name="parent_comment_id" value="' . $comment['comment_id'] . '">';
             echo '<input type="text" name="commenter_name" placeholder="Username" required><br>';
             echo '<textarea name="comment_text" placeholder="Viết phản hồi ở đây..." required></textarea><br>';
-
-            // Thêm reCAPTCHA vào form trả lời bình luận con với unique ID
-            echo '<div class="g-recaptcha" data-sitekey="6LfX5H4qAAAAAKDVoVci3BoeQ8DVpfIuTYqHPrN5"></div>';
             echo '<button type="submit" name="add_comment" class="reply-button">Phản hồi</button>';
             echo '</form>';
-
+    
             // Gọi lại hàm để hiển thị bình luận con
             displayComments($comments, $comment['comment_id']);
             echo '</div>';
         }
     }
+    
 }
-
-
 
 // Thêm bình luận mới
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_comment'])) {
@@ -186,4 +219,3 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['edit_comment'])) {
     header("Location: index.php?post_id=$post_id");
     exit();
 }
-

@@ -18,7 +18,7 @@ include("comController.php");
         <!-- Phần bài viết -->
         <div class="post">
             <h1 class="title"><?php echo htmlspecialchars($post['title']); ?></h1>
-            <em class="time"><?php echo htmlspecialchars($post['created_at']); ?></em>
+            <em class="time"><?php echo timeElapsedString($post['created_at']); ?></em>
             <p class="content"><?php echo htmlspecialchars($post['content']); ?></p>
         </div>
 
